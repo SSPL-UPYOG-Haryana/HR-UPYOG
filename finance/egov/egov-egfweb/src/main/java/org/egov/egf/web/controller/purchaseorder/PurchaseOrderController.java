@@ -259,4 +259,7 @@ public class PurchaseOrderController {
 		purchaseOrder.setDepartmentName(dept.getName());
 	}
 
+	public void testMethod() {
+		System.out.println("This is test method.....");
+	}
 }
