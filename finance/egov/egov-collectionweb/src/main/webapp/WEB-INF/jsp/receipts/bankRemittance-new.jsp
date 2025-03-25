@@ -50,6 +50,7 @@
 <%@ include file="/includes/taglibs.jsp"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<h1>Testing Fork</h1>
 <title><s:text name="cash.bankRemittance.title" /></title>
 <script type="text/javascript">
 	jQuery.noConflict();
@@ -471,6 +472,7 @@
 			</s:if>
 			<div class="formmainbox">
 				<div class="subheadnew">
+				<h1>Testing Fork</h1>
 					<s:text name="cash.bankRemittance.title" />
 				</div>
 				<div align="center">
