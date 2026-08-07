@@ -2,9 +2,12 @@ package org.egov.user.persistence.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import org.egov.common.contract.response.ResponseInfo;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class OtpResponse {
     private Otp otp;
