@@ -15,6 +15,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
   const [otp, setOtp] = useState("");
   const [isOtpValid, setIsOtpValid] = useState(true);
   const [showToast, setShowToast] = useState(null);
+  const [toastError, setToastError] = useState(true);
   const getUserType = () => Digit.UserService.getType();
   let sourceUrl = "https://s3.ap-south-1.amazonaws.com/egov-qa-assets";
   const pdfUrl = "https://pg-egov-assets.s3.ap-south-1.amazonaws.com/Upyog+Code+and+Copyright+License_v1.pdf";
@@ -52,25 +53,39 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
     setTimeout(closeToast, 5000);
   };
 
-  const onChangePassword = async (data) => {
-    try {
-      if (data.newPassword !== data.confirmPassword) {
-        return setShowToast(t("ERR_PASSWORD_DO_NOT_MATCH"));
-      }
-      const requestData = {
-        ...data,
-        otpReference: otp,
-        tenantId,
-        type: getUserType().toUpperCase(),
-      };
-
-      const response = await Digit.UserService.changePassword(requestData, tenantId);
-      navigateToLogin();
-    } catch (err) {
-      setShowToast(err?.response?.data?.error?.fields?.[0]?.message || t("ES_SOMETHING_WRONG"));
-      setTimeout(closeToast, 5000);
+const onChangePassword = async (data) => {
+  try {
+    if (data.newPassword !== data.confirmPassword) {
+      return setShowToast(t("ERR_PASSWORD_DO_NOT_MATCH"));
     }
-  };
+
+    const requestData = {
+      ...data,
+      otpReference: otp,
+      tenantId,
+      type: getUserType().toUpperCase(),
+    };
+
+    await Digit.UserService.changePassword(requestData, tenantId);
+
+    // Show success message
+    setToastError(false);
+    setShowToast("Password updated successfully.");
+
+    // Redirect after 2 seconds
+    setTimeout(() => {
+      navigateToLogin();
+    }, 2000);
+
+  } catch (err) {
+    setToastError(true);
+    setShowToast(
+      err?.response?.data?.error?.fields?.[0]?.message ||
+      t("ES_SOMETHING_WRONG")
+    );
+    setTimeout(closeToast, 5000);
+  }
+};
 
   const navigateToLogin = () => {
     history.replace("/digit-ui/employee/user/login");
@@ -146,7 +161,7 @@ const ChangePasswordComponent = ({ config: propsConfig, t }) => {
           </div>
         </div> */}
       </FormComposer>
-      {showToast && <Toast error={true} label={t(showToast)} onClose={closeToast} />}
+      {showToast && (<Toast error={toastError} label={t(showToast)} onClose={closeToast} />)}
 
       <div style={{ width: '100%', position: 'fixed', bottom: 0,backgroundColor:"white",textAlign:"center" }}>
         <div style={{ display: 'flex', justifyContent: 'center', color:"black" }}>
