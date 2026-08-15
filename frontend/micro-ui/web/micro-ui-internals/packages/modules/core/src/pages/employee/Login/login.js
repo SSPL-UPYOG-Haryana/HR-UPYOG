@@ -510,7 +510,7 @@ const setSessionCSRF = (token) => {
       {showToast && <Toast error={true} label={t(showToast)} onClose={closeToast} />}
       <div style={{ width: "100%", position: "fixed", bottom: 0, backgroundColor: "white", textAlign: "center" }}>
         <div style={{ display: "flex", justifyContent: "center", color: "black" }}>
-          <a
+          {/* <a
             style={{ cursor: "pointer", fontSize: window.Digit.Utils.browser.isMobile() ? "12px" : "12px", fontWeight: "400" }}
             href="#"
             target="_blank"
@@ -541,11 +541,11 @@ const setSessionCSRF = (token) => {
             }}
           >
             Designed & Developed By Sparrow Softech Pvt. Ltd.
-          </span>
+          </span> */}
 
           {/* <a style={{ cursor: "pointer", fontSize: "16px", fontWeight: "400"}} href="#" target='_blank'>UPYOG License</a> */}
         </div>
-        <div className="upyog-copyright-footer-web">
+        {/* <div className="upyog-copyright-footer-web">
           <span
             className=""
             style={{ cursor: "pointer", fontSize: window.Digit.Utils.browser.isMobile() ? "14px" : "16px", fontWeight: "400" }}
@@ -555,7 +555,7 @@ const setSessionCSRF = (token) => {
           >
             Copyright © 2025 Municipal Corporation of Haryana
           </span>
-        </div>
+        </div> */}
       </div>
     </Background>
   );
