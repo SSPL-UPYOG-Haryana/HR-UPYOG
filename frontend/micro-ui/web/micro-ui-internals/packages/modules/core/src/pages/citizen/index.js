@@ -265,7 +265,7 @@ const Home = ({
         <div style={{ display: 'flex', justifyContent: 'center', color:"black" }}>
           {/* <span style={{ cursor: "pointer", fontSize: window.Digit.Utils.browser.isMobile()?"12px":"14px", fontWeight: "400"}} onClick={() => { window.open('https://www.digit.org/', '_blank').focus();}} >Powered by DIGIT</span>
           <span style={{ margin: "0 10px" ,fontSize: window.Digit.Utils.browser.isMobile()?"12px":"14px"}}>|</span> */}
-          <a style={{ cursor: "pointer", fontSize: window.Digit.Utils.browser.isMobile()?"12px":"14px", fontWeight: "400"}} href="https://pg-egov-assets.s3.ap-south-1.amazonaws.com/Upyog+Code+and+Copyright+License_v1.pdf" target='_blank'>UPYOG License</a>
+          {/* <a style={{ cursor: "pointer", fontSize: window.Digit.Utils.browser.isMobile()?"12px":"14px", fontWeight: "400"}} href="https://pg-egov-assets.s3.ap-south-1.amazonaws.com/Upyog+Code+and+Copyright+License_v1.pdf" target='_blank'>UPYOG License</a>
 
           <span  className="upyog-copyright-footer" style={{ margin: "0 10px",fontSize: window.Digit.Utils.browser.isMobile()?"12px":"14px" }} >|</span>
           <span  className="upyog-copyright-footer" style={{ cursor: "pointer", fontSize: window.Digit.Utils.browser.isMobile()?"12px":"14px", fontWeight: "400"}} onClick={() => { window.open('https://ulbharyana.gov.in/', '_blank').focus();}} >Copyright © 2025 Municipal Corporation of Haryana</span>
@@ -276,13 +276,13 @@ const Home = ({
             }}
           >
             Designed & Developed By Sparrow Softech Pvt. Ltd.
-          </span>
+          </span> */}
           {/* <a style={{ cursor: "pointer", fontSize: "16px", fontWeight: "400"}} href="#" target='_blank'>UPYOG License</a> */}
 
         </div>
-        <div className="upyog-copyright-footer-web">
+        {/* <div className="upyog-copyright-footer-web">
           <span className="" style={{ cursor: "pointer", fontSize:  window.Digit.Utils.browser.isMobile()?"12px":"14px", fontWeight: "400"}} onClick={() => { window.open('https://ulbharyana.gov.in/', '_blank').focus();}} >Copyright © 2025 Municipal Corporation of Haryana</span>
-          </div>
+          </div> */}
       </div>
     </div>
   );
