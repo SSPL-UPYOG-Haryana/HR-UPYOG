@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gov-primary: #0b666b;
+  --color-gov-dark: #075257;
+  --color-gov-light: #e8f3f3;
+  --color-accent: #8e2638;
+  --color-accent-dark: #6f1d2d;
+  --color-accent-light: #f6e9ec;
+  --color-brand-offwhite: #f7f9f9;
+  --color-brand-dark: #17252a;
+  --color-brand-secondary: #526468;
+  --color-brand-border: #d7e2e3;
+  --color-brand-success: #2e7d5b;
+  --color-brand-warning: #c58a24;
+  --color-brand-error: #b42332;
+  --color-brand-info: #287c91;
+}
+
+@layer base {
+  :root {
+    --bg-primary: #0b666b;
+    --bg-dark: #075257;
+    --bg-light: #e8f3f3;
+    --accent: #8e2638;
+    --accent-dark: #6f1d2d;
+    --accent-light: #f6e9ec;
+    --offwhite: #f7f9f9;
+    --text-dark: #17252a;
+    --text-sec: #526468;
+    --border-color: #d7e2e3;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+    font-family:
+      "Plus Jakarta Sans",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      sans-serif;
+    color: #17252a;
+    background-color: #f7f9f9;
+  }
+
+  body {
+    background-color: #f7f9f9;
+    color: #17252a;
+    min-height: 100vh;
+  }
+}
+
+.font-size-sm {
+  font-size: 92%;
+}
+
+.font-size-lg {
+  font-size: 108%;
+}
+
+.font-size-xl {
+  font-size: 116%;
+}
