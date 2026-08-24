@@ -909,3 +909,9 @@ config:
         dockerfile: "build/maven/Dockerfile"  
       - work-dir: "municipal-services/asset-calculator/src/main/resources/db"
         image-name: "asset-calculator-db" 
+
+  - name: builds/upyog/frontend/home-ui
+    build:
+      - work-dir: frontend/home-ui/
+        dockerfile: frontend/home-ui/web/docker/Dockerfile
+        image-name: home-ui

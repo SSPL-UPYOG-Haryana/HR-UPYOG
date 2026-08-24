@@ -42,11 +42,11 @@ Static output will be generated inside the `/dist` directory.
 
 ---
 
-### Local Development with Live Reload in Docker
+### Run in Docker
 
 ```bash
 # Start container with volume mounting for real-time code editing
-docker compose -f docker-compose.dev.yml up --build
+docker compose -f web/docker/docker-compose.yml up --build
 ```
 Access dev server at: **`http://localhost:3001`**
 
