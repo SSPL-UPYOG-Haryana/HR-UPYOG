@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    container_name: home-ui
+
+    ports:
+      - "3001:3001"
+
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+    environment:
+      NODE_ENV: development
+
+    restart: unless-stopped
