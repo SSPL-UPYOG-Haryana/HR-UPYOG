@@ -3,11 +3,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 const HRMSCard = () => {
+    const { t } = useTranslation();
   const ADMIN = Digit.Utils.hrmsAccess();
   if (!ADMIN) {
     return null;
   }
-    const { t } = useTranslation();
     const tenantId = Digit.ULBService.getCurrentTenantId();
     const { isLoading, isError, error, data, ...rest } = Digit.Hooks.hrms.useHRMSCount(tenantId);
 

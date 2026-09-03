@@ -34,8 +34,6 @@ const TopBar = ({
   const [profilePic, setProfilePic] = React.useState(null);
   const [zoneName, setZoneName] = React.useState(Digit.SessionStorage.get("Employee.zone"));
   const [designationName, setDesignationName] = React.useState(Digit.SessionStorage.get("Employee.designation"));
-  console.log(zoneName, "zone name");
-  console.log(designationName, "designation name");
   React.useEffect(() => {
     const interval = setInterval(() => {
       const storedZone = Digit.SessionStorage.get("Employee.zone");
@@ -141,17 +139,17 @@ const TopBar = ({
       <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
         {loggedin &&
           (cityDetails?.city?.ulbGrade ? (
-            <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
+            <span className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
               {t(cityDetails?.i18nKey).toUpperCase()}{" "}
               {t(`ULBGRADE_${cityDetails?.city?.ulbGrade.toUpperCase().replace(" ", "_").replace(".", "_")}`).toUpperCase()}
-            </p>
+            </span>
           ) : (
             <img className="state" src={logoUrl} />
           ))}
         {!loggedin && (
-          <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
+          <span className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
             {t(`MYCITY_${stateInfo?.code?.toUpperCase()}_LABEL`)} {t(`MYCITY_STATECODE_LABEL`)}
-          </p>
+          </span>
         )}
         {!mobileView && (
           <div className={mobileView ? "right" : "flex-right right w-80 column-gap-15"} style={!loggedin ? { width: "80%" } : {}}>
