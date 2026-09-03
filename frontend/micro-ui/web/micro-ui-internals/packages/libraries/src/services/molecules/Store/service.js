@@ -60,6 +60,23 @@ export const StoreService = {
     const uiHomePage = MdmsRes["common-masters"]?.uiHomePage?.[0]||{};
     const localities = {};
     const revenue_localities = {};
+    const mdmsModules = MdmsRes?.tenant?.citymodule
+      ?.filter((module) => module?.active)
+      ?.filter((module) => enabledModules?.includes(module?.code)) || [];
+
+    // Keep Migration available locally until its tenant.citymodule master is added to MDMS.
+    const localModules = enabledModules?.includes("Migration") && !mdmsModules.some(({ code }) => code === "Migration")
+      ? [{
+          module: "Migration",
+          code: "Migration",
+          active: true,
+          order: 999,
+          tenants: (MdmsRes?.tenant?.tenants || [])
+            .filter(({ code }) => code !== stateCode)
+            .sort((firstTenant, secondTenant) => firstTenant.code.localeCompare(secondTenant.code))
+            .map(({ code }) => ({ code })),
+        }]
+      : [];
     const initData = {
       languages: stateInfo.hasLocalisation ? stateInfo.languages : [{ label: "ENGLISH", value: "en_IN" }],
       stateInfo: {
@@ -71,7 +88,7 @@ export const StoreService = {
         bannerUrl: stateInfo.bannerUrl,
       },
       localizationModules: stateInfo.localizationModules,
-      modules: MdmsRes?.tenant?.citymodule.filter((module) => module?.active).filter((module) => enabledModules?.includes(module?.code))?.sort((x,y)=>x?.order-y?.order),
+      modules: [...mdmsModules, ...localModules].sort((x, y) => x?.order - y?.order),
       uiHomePage: uiHomePage
     };
 

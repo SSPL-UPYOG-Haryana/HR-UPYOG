@@ -18,7 +18,6 @@ import {
   paymentConfigs,
 } from "@upyog/digit-ui-module-common";
 import { DigitUI } from "@upyog/digit-ui-module-core";
-import { initLibraries } from "@upyog/digit-ui-libraries";
 import {
   HRMSModule,
   initHRMSComponents,
@@ -56,9 +55,7 @@ import { initBillsComponents } from "@upyog/digit-ui-module-bills";
 // import { initReportsComponents } from "@upyog/digit-ui-module-reports";
 
 import { initFinanceComponents, FinanceModule } from "@mcd89/digit-ui-module-finance";
-
-initLibraries();
-
+import { MigrationModule, initMigrationComponents } from "@upyog/digit-ui-module-migration";
 const enabledModules = [
   // "Tqm",
   // "PGR",
@@ -90,8 +87,8 @@ const enabledModules = [
   // "EW",
   // "CHB",
   "Finance",
-  "HRMS"
-
+  "HRMS",
+  "Migration",
 ];
 window.Digit.ComponentRegistryService.setupRegistry({
   ...paymentConfigs,
@@ -124,7 +121,8 @@ window.Digit.ComponentRegistryService.setupRegistry({
   // CHBModule,
   // CHBLinks,
   // ...CHBComponents,
-  FinanceModule
+  FinanceModule,
+  MigrationModule,
 });
 
 initPGRComponents();
@@ -141,6 +139,7 @@ initReceiptsComponents();
 // initCommonPTComponents();
 initBillsComponents();
 initFinanceComponents();
+initMigrationComponents();
 // initReportsComponents();
 // initCustomisationComponents();
 

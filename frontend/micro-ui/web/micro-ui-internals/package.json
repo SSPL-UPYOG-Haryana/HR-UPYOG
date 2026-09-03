@@ -13,7 +13,9 @@
     "packages/modules/noc",
     "packages/modules/obps",
     "packages/modules/commonPt",
-    "packages/modules/common"
+    "packages/modules/common",
+    "packages/modules/hrms",
+    "packages/modules/migration"
   ],
   "license": "MIT",
   "private": true,
@@ -50,6 +52,7 @@
     "buildD:mcollect": "cd packages/modules/mCollect && yarn build",
     "buildD:receipts": "cd packages/modules/receipts && yarn build",
     "buildD:hrms": "cd packages/modules/hrms && yarn build",
+    "build:migration": "cd packages/modules/migration && yarn build",
     "buildD:bills": "cd packages/modules/bills && yarn build",
     "buildD:cm": "cd packages/modules/cm && yarn build",
     "buildD:finance": "cd packages/modules/finance && yarn build",
