@@ -32,6 +32,7 @@ import Dropdown from "./atoms/Dropdown";
 import EllipsisMenu from "./atoms/EllipsisMenu";
 import EmployeeAppContainer from "./atoms/EmployeeAppContainer";
 import { EmployeeModuleCard, ModuleCardFullWidth } from "./atoms/EmployeeModuleCard";
+import { MigrationModuleCard } from "./atoms/MigrationModuleCard";
 import GreyOutText from "./atoms/GreyOutText";
 import Hamburger from "./atoms/Hamburger";
 import Header from "./atoms/Header";
@@ -307,6 +308,7 @@ export {
   EllipsisMenu,
   CitizenHomeCard,
   EmployeeModuleCard,
+  MigrationModuleCard,
   StandaloneSearchBar,
   CardBasedOptions,
   WhatsNewCard,
