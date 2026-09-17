@@ -12,6 +12,10 @@ class EGFFinance extends Component {
       isLoading: true,
       lastUrl: null, // track last loaded URL
     };
+
+    this.handleRefreshSession = this.fetchTTL.bind(this);
+    this.iframeRef = React.createRef();
+
     // this.onFrameLoad = this.onFrameLoad.bind(this);
     // this.resetIframe = this.resetIframe.bind(this);
     // this.fetchTTL = this.fetchTTL.bind(this);
@@ -41,40 +45,40 @@ class EGFFinance extends Component {
   }
 
 
-async fetchTTL() {
-  try {
-    const tenantIdFull = getTenantId(); 
-    const tenantParts = tenantIdFull.split('.');
-    const cityCode = tenantParts.length > 1 ? tenantParts[1] : undefined;  // e.g. "pg.city"
-    const baseProxy = process.env.REACT_APP_BASE_PROXY; 
-    const parsedURL = new URL(baseProxy);
-    const domain = parsedURL.hostname;
-    const protocol = parsedURL.protocol; 
+  async fetchTTL() {
+    try {
+      const tenantIdFull = getTenantId();
+      const tenantParts = tenantIdFull.split('.');
+      const cityCode = tenantParts.length > 1 ? tenantParts[1] : undefined;  // e.g. "pg.city"
+      const baseProxy = process.env.REACT_APP_BASE_PROXY;
+      const parsedURL = new URL(baseProxy);
+      const domain = parsedURL.hostname;
+      const protocol = parsedURL.protocol;
 
-    // Construct URL dynamically based on tenant and environment
-    // const TtlUrl = `${protocol}//${cityCode}-${domain}/services/EGF/session/ttl`;
-    const TtlUrl = `${protocol}//${domain}/services/EGF/session/ttl`;
-    // const TtlUrl = "http://gurugram.localhost:9090/services/EGF/session/ttl"; // for local dev only
-    const response = await fetch(TtlUrl, { credentials: "include" });
-    if (!response.ok) {
-      console.warn("TTL API responded with status:", response.status);
+      // Construct URL dynamically based on tenant and environment
+      // const TtlUrl = `${protocol}//${cityCode}-${domain}/services/EGF/session/ttl`;
+      const TtlUrl = `${protocol}//${domain}/services/EGF/session/ttl`;
+      // const TtlUrl = "http://localhost:9090/services/EGF/session/ttl"; // for local dev only
+      const response = await fetch(TtlUrl, { credentials: "include" });
+      if (!response.ok) {
+        console.warn("TTL API responded with status:", response.status);
+        this.handleSessionExpired();
+        return;
+      }
+      const data = await response.json();
+      if (data && typeof data.ttl === "number") {
+        clearInterval(this.countdownInterval);
+        this.startCountdown(data.ttl);
+        window.dispatchEvent(new CustomEvent("sessionRefreshComplete"));
+      } else {
+        console.warn("Unexpected TTL response format:", data);
+      }
+    } catch (error) {
+      // Don't show raw errors on UI — just log silently for debugging
+      console.warn("Failed to fetch TTL:", error.message);
       this.handleSessionExpired();
-      return;
     }
-    const data = await response.json();
-    if (data && typeof data.ttl === "number") {
-      clearInterval(this.countdownInterval);
-      this.startCountdown(data.ttl);
-      window.dispatchEvent(new CustomEvent("sessionRefreshComplete"));
-    } else {
-      console.warn("Unexpected TTL response format:", data);
-    }
-  } catch (error) {
-    // Don't show raw errors on UI — just log silently for debugging
-    console.warn("Failed to fetch TTL:", error.message);
-    this.handleSessionExpired();
   }
-}
   async handleSessionExpired() {
     // Optional: clear any running timers
     clearInterval(this.countdownInterval);
@@ -83,25 +87,25 @@ async fetchTTL() {
     // alert("Your session has expired. Please log in again.");
 
     try {
-    // Attempt Redux logout (await ensures it completes)
-    if (this.props && this.props.logout) {
-      await this.props.logout();
+      // Attempt Redux logout (await ensures it completes)
+      if (this.props && this.props.logout) {
+        await this.props.logout();
+      }
+
+      // Clean local/session storage
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Finally redirect to proper login path
+      window.location.replace("/digit-ui/employee/user/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+
+      // Fallback: still redirect
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.replace("/digit-ui/employee/user/login");
     }
-
-    // Clean local/session storage
-    localStorage.clear();
-    sessionStorage.clear();
-
-    // Finally redirect to proper login path
-    window.location.replace("/digit-ui/employee/user/login");
-  } catch (err) {
-    console.error("Logout failed:", err);
-
-    // Fallback: still redirect
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.replace("/digit-ui/employee/user/login");
-  }
   }
   /** Submit the hidden form to iframe */
   submitIframeForm = () => {
@@ -115,17 +119,17 @@ async fetchTTL() {
   render() {
     const { isLoading } = this.state;
     let auth_token = getAccessToken(),
-    locale = localStorage.getItem("locale"),
-    menuUrl = this.props.location.pathname,
-    loc = window.location,
-    subdomainurl,
-    domainurl,
-    finEnv,
-    hostname = loc.hostname,
-    winheight = window.innerHeight - 100,
-    erp_url,
-    tenantId = getTenantId();
-    
+      locale = localStorage.getItem("locale"),
+      menuUrl = this.props.location.pathname,
+      loc = window.location,
+      subdomainurl,
+      domainurl,
+      finEnv,
+      hostname = loc.hostname,
+      winheight = window.innerHeight - 100,
+      erp_url,
+      tenantId = getTenantId();
+
     //Reading domain name from the request url
     domainurl = hostname.substring(hostname.indexOf(".") + 1);
     // Reading environment name (ex: dev, qa, uat, fin-uat etc) from the globalconfigs if exists else reading from the .env file
@@ -135,7 +139,7 @@ async fetchTTL() {
     // erp_url = loc.protocol + "//" + getTenantId().split(".")[1] + subdomainurl + menuUrl;
 
     subdomainurl = domainurl;
-    erp_url = loc.protocol + "//" + subdomainurl + menuUrl;
+    erp_url = loc.protocol + "//" + menuUrl;
 
     console.log("Finance Iframe URL:", erp_url);
     return (
@@ -201,12 +205,12 @@ async fetchTTL() {
           </div>
         )}
 
-        <iframe name="erp_iframe" id="erp_iframe" height={winheight} width="100%" style={{display: isLoading ? "none" : "block",border: "none"}} />
+        <iframe ref={this.iframeRef} key={menuUrl} name="erp_iframe" id="erp_iframe" height={winheight} width="100%" style={{ display: isLoading ? "none" : "block", border: "none" }} />
         <form action={erp_url} id="erp_form" method="post" target="erp_iframe">
           <input readOnly hidden="true" name="auth_token" value={auth_token} />
           <input readOnly hidden="true" name="tenantId" value={tenantId} />
           <input readOnly hidden="true" name="locale" value={locale} />
-	  <input readOnly hidden="true" name="formPage" value="true" />
+          <input readOnly hidden="true" name="formPage" value="true" />
         </form>
       </div>
     );
@@ -214,9 +218,9 @@ async fetchTTL() {
   componentDidMount() {
     window.addEventListener("message", this.onMessage, false);
     window.addEventListener("loacaleChangeEvent", this.resetIframe, false);
-    window.addEventListener("refreshSession", this.fetchTTL.bind(this));
-    const iframe = document.getElementById("erp_iframe");
-    iframe.addEventListener("load", this.onFrameLoad);
+    window.addEventListener("refreshSession", this.handleRefreshSession);
+    this.iframeRef.current.addEventListener("load", this.onFrameLoad);
+
 
     // First time submit
     this.loadFinanceIframe();
@@ -232,13 +236,14 @@ async fetchTTL() {
     const currentUrl = this.props.location.pathname;
     if (currentUrl !== prevProps.location.pathname) {
       // Only when URL (menu) changes
+      this.iframeRef.current.addEventListener("load", this.onFrameLoad);
       this.loadFinanceIframe();
     }
   }
 
   /** Handle Finance module load */
   loadFinanceIframe() {
-    debugger;
+    // debugger;
     const menuUrl = this.props.location.pathname;
     const loc = window.location;
     const hostname = loc.hostname;
@@ -249,8 +254,8 @@ async fetchTTL() {
 
     // Construct subdomain dynamically
     const subdomainurl = finEnv ? `${finEnv}.${domainurl}` : `.${domainurl}`;
-    const erp_url =
-      loc.protocol + "//"+ subdomainurl +  menuUrl;
+    // const erp_url = loc.protocol + "//"+ subdomainurl +  menuUrl;
+    const erp_url = loc.protocol + "//" + menuUrl;
 
     this.setState({ isLoading: true, lastUrl: menuUrl }, () => {
       const form = document.getElementById("erp_form");
@@ -262,12 +267,14 @@ async fetchTTL() {
   onMessage = (event) => {
     if (event.data != "close") return;
     // document.getElementById('erp_iframe').style.display='none';
-   // this.props.history.push("/inbox");
-	if (window.history.length > 2) {
-      window.history.go(-2);
-    } else {
-      window.history.back();
-    }
+    // this.props.history.push("/inbox");
+    const currentPath = this.props.location.pathname;
+    const targetPath = currentPath.endsWith("/edit")
+      ? currentPath.replace(/\/edit$/, "/view")
+      : "/inbox";
+
+    this.props.history.push(targetPath);
+
   };
   resetIframe = () => {
     console.log("Resetting iframe...");
@@ -282,13 +289,14 @@ async fetchTTL() {
     return typeof window.globalConfigs !== "undefined" && typeof window.globalConfigs.getConfig === "function";
   }
   componentWillUnmount() {
-  clearInterval(this.countdownInterval);
-  window.removeEventListener("message", this.onMessage, false);
-  window.removeEventListener("loacaleChangeEvent", this.resetIframe, false);
-  window.removeEventListener("refreshSession", this.fetchTTL);
-  const iframe = document.getElementById("erp_iframe");
-  if (iframe) iframe.removeEventListener("load", this.onFrameLoad);
-}
+    this.isUnmounted = true;
+    clearInterval(this.countdownInterval);
+    window.removeEventListener("message", this.onMessage, false);
+    window.removeEventListener("loacaleChangeEvent", this.resetIframe, false);
+    window.removeEventListener("refreshSession", this.handleRefreshSession);
+    const iframe = this.iframeRef.current;
+    if (iframe) iframe.removeEventListener("load", this.onFrameLoad);
+  }
 
 }
 

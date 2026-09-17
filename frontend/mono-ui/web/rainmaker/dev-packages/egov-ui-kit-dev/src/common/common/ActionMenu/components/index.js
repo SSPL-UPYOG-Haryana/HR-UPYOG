@@ -66,9 +66,23 @@ class ActionMenuComp extends Component {
       this.props.activeRoutePath !== prevProps.activeRoutePath
     ) {
       this.fetchLocales();
-      this.setState({ searchText: "" });
+      this.setState({
+        searchText: "",
+        expandedItems: this.getExpandedItemsForRoute(this.props.activeRoutePath),
+      });
     }
   }
+
+  getExpandedItemsForRoute = (routePath) => {
+    if (!routePath || routePath === "null") return {};
+
+    const pathParts = routePath.split(".");
+    return pathParts.slice(0, -1).reduce((expandedItems, _, index) => {
+      const parentPath = pathParts.slice(0, index + 1).join(".");
+      expandedItems[parentPath] = true;
+      return expandedItems;
+    }, {});
+  };
 
   getTopLevelMenuItems = (actionList) => {
     if (!actionList) return [];
@@ -96,6 +110,22 @@ class ActionMenuComp extends Component {
     );
   };
 
+  isPathActive = (path) => {
+    const { activeRoutePath, actionListArr } = this.props;
+    if (activeRoutePath === path || activeRoutePath.startsWith(`${path}.`)) {
+      return true;
+    }
+
+    const currentPath = window.location.pathname.replace(/\/$/, "");
+    return actionListArr.some((action) => {
+      if (!action.path || !action.navigationURL || !action.path.startsWith(path)) {
+        return false;
+      }
+      const navigationPath = `/${action.navigationURL}`.replace(/\/$/, "");
+      return currentPath === navigationPath || currentPath.endsWith(navigationPath);
+    });
+  };
+
   getSubmenuItems = (path) => {
     const { actionListArr } = this.props;
     if (!actionListArr) return [];
@@ -107,14 +137,16 @@ class ActionMenuComp extends Component {
         const remainingPath = action.path.substring(pathPrefix.length);
         const parts = remainingPath.split(".");
         if (parts.length === 1) {
-          submenuItems.push({
-            name: action.displayName,
-            path: action.path,
-            displayName: action.displayName,
-            navigationURL: action.navigationURL,
-            url: action.url,
-            leftIcon: action.leftIcon,
-          });
+          if (!submenuItems.some((item) => item.path === action.path)) {
+            submenuItems.push({
+              name: action.displayName,
+              path: action.path,
+              displayName: action.displayName,
+              navigationURL: action.navigationURL,
+              url: action.url,
+              leftIcon: action.leftIcon,
+            });
+          }
         } else if (parts.length > 1) {
           const firstPart = parts[0];
           const childPath = path + "." + firstPart;
@@ -182,6 +214,16 @@ class ActionMenuComp extends Component {
     }));
   };
 
+  handleSearchResultClick = (action) => {
+    this.setState({
+      searchText: "",
+      filteredActions: null,
+      mobileSearchVisible: false,
+    });
+    this.props.updateActiveRoute(action.path, action.displayName);
+    this.props.toggleDrawer && this.props.toggleDrawer();
+  };
+
   handleToggleItem = (itemPath) => {
     this.setState((prevState) => {
       const currentExpanded = { ...prevState.expandedItems };
@@ -215,7 +257,8 @@ class ActionMenuComp extends Component {
 
   renderAccordionItem = (item, level = 0) => {
     const { expandedItems } = this.state;
-    const isExpanded = !!expandedItems[item.path];
+    const isActive = this.isPathActive(item.path);
+    const isExpanded = !!expandedItems[item.path] || isActive;
     const hasChildren = this.hasChildren(item.path);
     const itemStyle = { paddingLeft: `${15 + level * 20}px` };
     const label = item.displayName
@@ -231,7 +274,7 @@ class ActionMenuComp extends Component {
       return (
         <li className="nav-item" key={item.path}>
           <Link
-            className="nav-link"
+            className={`nav-link ${isActive ? "selected" : ""}`}
             style={itemStyle}
             to={url}
             onClick={(e) => {
@@ -280,7 +323,7 @@ class ActionMenuComp extends Component {
         <React.Fragment key={item.path}>
           <li className="nav-item">
             <div
-              className={`nav-link accordion-toggle ${isExpanded ? "expanded" : ""}`}
+              className={`nav-link accordion-toggle ${isExpanded ? "expanded" : ""} ${isActive ? "selected" : ""}`}
               style={itemStyle}
               onClick={() => this.handleToggleItem(item.path)}
             >
@@ -336,8 +379,7 @@ class ActionMenuComp extends Component {
                       e.preventDefault();
                       return;
                     }
-                    this.props.updateActiveRoute(action.path, action.displayName);
-                    this.props.toggleDrawer && this.props.toggleDrawer();
+                    this.handleSearchResultClick(action);
                   }}
                 >
                   {this.renderLeftIcon(action.leftIcon, action)}

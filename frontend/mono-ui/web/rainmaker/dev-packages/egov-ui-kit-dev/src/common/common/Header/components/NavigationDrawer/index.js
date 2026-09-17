@@ -89,7 +89,7 @@ const NavigationDrawer = ({
         <LanguageSelection fetchLocalizationLabel={fetchLocalizationLabel} />
         {isUserSetting && CommonMenuItems.map((item) => {
           return (
-            <div className="sideMenuItem">
+            <div className="sideMenuItem" key={item.id || item.path || item.route}>
               <MenuItem
                 innerDivStyle={styles.defaultMenuItemStyle}
                 style={{ whiteSpace: "initial" }}

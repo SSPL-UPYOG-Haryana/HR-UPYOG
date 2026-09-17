@@ -163,7 +163,7 @@ export const callPGService = async (state, dispatch) => {
     } else {
       try {
         console.log("goToPaymentGatewaygoToPaymentGatewaygoToPaymentGateway",goToPaymentGateway,goToPaymentGateway.Transaction.redirectUrl)
-        debugger
+        // debugger
         let redirectUrl=goToPaymentGateway.Transaction.redirectUrl
         const gatewayParam = redirectUrl
           .split("?")
@@ -223,8 +223,8 @@ export const callPGService = async (state, dispatch) => {
         }
         $(document.body).append(newForm);
         newForm.submit();
-console.log("newForm",newForm)
-debugger
+// console.log("newForm",newForm)
+// debugger
         makePayment(gatewayParam.txURL,newForm);
 
       } catch (e) {
