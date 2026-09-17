@@ -48,6 +48,8 @@ const EgovAppBar = ({
   notificationsCount,
   isUserSetting,
   logoImage,
+  activeRoutePath,
+  dispatch,
   ...rest
 }) => {
   return (
