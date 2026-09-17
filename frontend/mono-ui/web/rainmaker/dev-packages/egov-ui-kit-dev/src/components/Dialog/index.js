@@ -83,7 +83,7 @@ const DialogUI = ({
 
 DialogUI.propTypes = {
   actions: PropTypes.arrayOf(PropTypes.node),
-  title: PropTypes.string,
+  title: PropTypes.node,
   handleClose: PropTypes.func,
   overlayStyle: PropTypes.object,
   actionsContainerStyle: PropTypes.object,
