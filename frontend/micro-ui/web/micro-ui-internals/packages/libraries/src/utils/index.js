@@ -320,6 +320,15 @@ const hrmsAccess = () => {
   return HRMS_ACCESS?.length > 0;
 };
 
+// Migration changes employee data, so keep access restricted to HRMS administrators.
+const migrationAccess = () => {
+  const userInfo = Digit.UserService.getUser();
+  const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
+  const migrationRoles = ["HRMS_ADMIN"];
+  const MIGRATION_ACCESS = userRoles?.filter((role) => migrationRoles.includes(role));
+  return MIGRATION_ACCESS?.length > 0;
+};
+
 const dashboardAccess = () =>{
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
@@ -377,6 +386,7 @@ export default {
   receiptsAccess,
   didEmployeeHasRole,
   hrmsAccess,
+  migrationAccess,
   getPattern,
   hrmsRoles,
   getUnique,

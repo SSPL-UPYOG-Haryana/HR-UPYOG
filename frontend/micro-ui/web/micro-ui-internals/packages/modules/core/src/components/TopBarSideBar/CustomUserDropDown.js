@@ -33,7 +33,6 @@ const CustomUserDropdown = ({ userOptions, roleOptions = [], selectedRole, handl
     setIsRoleDropdownOpen(false);
     setIsOpen(false);
   };
-  console.log(" role ", selectedRole);
 
   return (
     <div style={{ position: "relative" }}>

@@ -7,9 +7,6 @@ import App from './App';
 // import { TLCustomisations } from './Customisations/tl/TLCustomisation';
 
 
-initLibraries();
-
-
 // window.Digit.Customizations = { PGR: {} ,TL:TLCustomisations};
 
 const user = window.Digit.SessionStorage.get("User");
@@ -54,10 +51,12 @@ if (!user || !user.access_token || !user.info) {
   // end
 }
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+initLibraries().then(() => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    document.getElementById('root')
+  );
+});
 
