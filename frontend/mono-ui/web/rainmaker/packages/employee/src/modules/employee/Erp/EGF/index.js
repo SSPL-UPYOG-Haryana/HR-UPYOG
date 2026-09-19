@@ -47,22 +47,25 @@ class EGFFinance extends Component {
 
   async fetchTTL() {
     try {
-      const tenantIdFull = getTenantId();
-      const tenantParts = tenantIdFull.split('.');
-      const cityCode = tenantParts.length > 1 ? tenantParts[1] : undefined;  // e.g. "pg.city"
+      // const tenantIdFull = getTenantId();
+      // const tenantParts = tenantIdFull.split('.');
+      // const cityCode = tenantParts.length > 1 ? tenantParts[1] : undefined;  // e.g. "pg.city"
+
       const baseProxy = process.env.REACT_APP_BASE_PROXY;
       const parsedURL = new URL(baseProxy);
-      const domain = parsedURL.hostname;
-      const protocol = parsedURL.protocol;
+      const financeOrigin = parsedURL.origin;
 
       // Construct URL dynamically based on tenant and environment
+      const TtlUrl = `${financeOrigin}/services/EGF/session/ttl`;
       // const TtlUrl = `${protocol}//${cityCode}-${domain}/services/EGF/session/ttl`;
-      const TtlUrl = `${protocol}//${domain}/services/EGF/session/ttl`;
       // const TtlUrl = "http://localhost:9090/services/EGF/session/ttl"; // for local dev only
+
       const response = await fetch(TtlUrl, { credentials: "include" });
       if (!response.ok) {
         console.warn("TTL API responded with status:", response.status);
-        this.handleSessionExpired();
+        if (response.status === 401 || response.status === 403) {
+          this.handleSessionExpired();
+        }
         return;
       }
       const data = await response.json();
@@ -76,7 +79,6 @@ class EGFFinance extends Component {
     } catch (error) {
       // Don't show raw errors on UI — just log silently for debugging
       console.warn("Failed to fetch TTL:", error.message);
-      this.handleSessionExpired();
     }
   }
   async handleSessionExpired() {
@@ -135,11 +137,11 @@ class EGFFinance extends Component {
     // Reading environment name (ex: dev, qa, uat, fin-uat etc) from the globalconfigs if exists else reading from the .env file
     finEnv = this.globalConfigExists() ? window.globalConfigs.getConfig("FIN_ENV") : process.env.REACT_APP_FIN_ENV;
     // Preparing finance subdomain url using the above environment name and the domain url
-    // subdomainurl = !!(finEnv) ? "-" + finEnv + "." + domainurl : "." + domainurl;
-    // erp_url = loc.protocol + "//" + getTenantId().split(".")[1] + subdomainurl + menuUrl;
+    subdomainurl = !!(finEnv) ? "-" + finEnv + "." + domainurl : "." + domainurl;
+    erp_url = loc.protocol + "//" + getTenantId().split(".")[1] + subdomainurl + menuUrl;
 
-    subdomainurl = domainurl;
-    erp_url = loc.protocol + "//" + menuUrl;
+    // subdomainurl = domainurl;
+    // erp_url = loc.protocol + "//localhost:9090" + menuUrl;
 
     console.log("Finance Iframe URL:", erp_url);
     return (
@@ -254,8 +256,8 @@ class EGFFinance extends Component {
 
     // Construct subdomain dynamically
     const subdomainurl = finEnv ? `${finEnv}.${domainurl}` : `.${domainurl}`;
-    // const erp_url = loc.protocol + "//"+ subdomainurl +  menuUrl;
-    const erp_url = loc.protocol + "//" + menuUrl;
+    const erp_url = loc.protocol + "//" + subdomainurl +  menuUrl;
+    // const erp_url = loc.protocol + "//localhost:9090" + menuUrl;
 
     this.setState({ isLoading: true, lastUrl: menuUrl }, () => {
       const form = document.getElementById("erp_form");
