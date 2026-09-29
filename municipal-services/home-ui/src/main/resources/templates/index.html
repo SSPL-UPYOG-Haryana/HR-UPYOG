@@ -95,7 +95,7 @@
           <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
         <!-- <a href="https://www.mygov.in/campaigns/swachh-bharat/" target="_blank"> -->
-          <img src="assets/img/DULB_Haryana.png" alt="swachh-bharatlogo" class="dulb-logo">
+        <img src="assets/img/DULB_Haryana.png" alt="swachh-bharatlogo" class="dulb-logo">
       </div>
 
     </div>
@@ -117,12 +117,13 @@
             <div class="d-flex">
               <!--              <a th:href="@{/income-codes}" class="btn-get-started me-2">INCOME CODES</a>-->
               <!--              <a th:href="@{/expenditure-codes}" class="btn-get-started">EXPENDITURE CODES</a>-->
-              <!-- <a th:href="@{https://docs.google.com/spreadsheets/d/1p386kmzXcfPrPV8w8lgiRHFV3ol2fRxPsp6CgOE2LdA/edit?usp=sharing}" target="_blank" rel="noopener noreferrer" class="btn-get-started me-2">Old / New Heads Mapping</a> -->
               <a th:href="@{https://docs.google.com/forms/d/e/1FAIpQLSfcM3e1F1nIW9g97TYbWfZcpu2US9qbOc4ZPHQgWSFAlL02Ig/viewform}"
                 target="_blank" rel="noopener noreferrer" class="btn-get-started me-2">Raise Your Query</a>
-              <a th:href="@{https://drive.google.com/file/d/1ImAD0QPbYU0lgzOreBs_iLc-5C3SlkBb/view}"
-                target="_blank" rel="noopener noreferrer" class="btn-get-started me-2">FAQs</a>
-              <a th:href="@{https://drive.google.com/drive/folders/1pdrdyk-g0ZFToeORJ7Md2ATXDZ8CqXE6}" target="_blank"
+              <a th:href="@{https://drive.google.com/file/d/1ImAD0QPbYU0lgzOreBs_iLc-5C3SlkBb/view}" target="_blank"
+                rel="noopener noreferrer" class="btn-get-started me-2">FAQs</a>
+              <a th:href="@{https://drive.google.com/drive/my-drive}" target="_blank" rel="noopener noreferrer" class="btn-get-started me-2">Training
+                Material</a>
+              <a th:href="@{https://drive.google.com/drive/folders/1DN-z1I0DbFYakk6kC1ZQXljPSaOX2JtK}" target="_blank"
                 rel="noopener noreferrer" class="btn-get-started">Training Video</a>
             </div>
           </div>
@@ -144,7 +145,7 @@
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-diagram-3 icon"></i></div>
               <h4><a href="#" class="stretched-link">Centralized Financial Management </a></h4>
-              <p>Consolidate accounts from 12 zones and 200+ wards into a single, unified platform.</p>
+              <p>Manage municipal financial operations through a unified digital platform across 87 ULBs.</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -152,7 +153,7 @@
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-database-lock icon"></i></div>
               <h4><a href="#" class="stretched-link">Real-Time Data Synchronization</a></h4>
-              <p>Instantly update and access financial records across all locations.</p>
+              <p>Access updated financial ledgers, receipts, and vouchers across connected ULB systems.</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -160,7 +161,8 @@
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-bar-chart-line icon"></i></div>
               <h4><a href="#" class="stretched-link">Automated Reporting & Analytics</a></h4>
-              <p>Generate detailed financial reports and insights with minimal manual effort.</p>
+              <p>Generate standardized NMAM financial statements, audit reports, and statutory insights effortlessly.
+              </p>
             </div>
           </div><!-- End Service Item -->
 
@@ -168,7 +170,7 @@
             <div class="service-item position-relative">
               <div class="icon"><i class="bi bi-person-lock icon"></i></div>
               <h4><a href="#" class="stretched-link">Role-Based Access Control</a></h4>
-              <p>Ensure data security by assigning permissions based on user roles and zones.</p>
+              <p>Secure financial operations through strictly controlled Maker-Checker roles and permissions.</p>
             </div>
           </div><!-- End Service Item -->
 
@@ -470,56 +472,64 @@
             <div class="faq-container">
 
               <div class="faq-item">
-                <h3>What is the Municipal Financial Management System?</h3>
+                <h3>What is the Haryana ULB Finance System?</h3>
                 <div class="faq-content">
-                  <p>It is a comprehensive software solution designed to streamline and manage all core financial
-                    operations of the Municipal Corporation of Delhi, including budgeting, accounting, expenditure
-                    tracking, and reporting.</p>
+                  <p>The Haryana ULB Finance System (https://finance.ulbharyana.gov.in/digit-ui/employee/user/login) is
+                    the unified financial management and accrual-based double-entry accounting platform developed by the
+                    Directorate of Urban Local Bodies, Government of Haryana. It standardizes budget preparation,
+                    revenue demand & collections, vendor bill processing, voucher payments, bank reconciliations, and
+                    statutory compliance across all 87 Urban Local Bodies in Haryana.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Who can access the system?</h3>
+                <h3>Who is authorized to access the Finance System?</h3>
                 <div class="faq-content">
-                  <p>Authorized municipal officers, financial staff, and administrators across all zones and wards can
-                    securely access the system based on their roles and permissions.</p>
+                  <p>Access is restricted to authorized financial officers, Municipal Commissioners, Executive Officers
+                    (EOs), Secretaries, Municipal Engineers (ME), Accounts Officers, Accountants, Bill Dealing
+                    Assistants, and State Directorate Auditors across Haryana’s 87 Urban Local Bodies. Access is
+                    governed by strictly defined Role-Based Access Control (RBAC) and Maker-Checker hierarchies.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>How secure is the system?</h3>
+                <h3>How do authorized municipal officers log in to the system?</h3>
                 <div class="faq-content">
-                  <p>Security is a top priority. The system uses advanced encryption, role-based access control, and
-                    audit trails to ensure data confidentiality and integrity.</p>
+                  <p>Authorized personnel can access the application by clicking the “Login to Finance System” button on
+                    the portal or visiting the Finance System. Users log in using their official credentials and access
+                    is based on their designated ULB and assigned permissions. OTP verification is required when
+                    changing or resetting the password.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Can the system generate financial reports?</h3>
+                <h3>Does the system support multiple ULBs with distinct accounting boundaries?</h3>
                 <div class="faq-content">
-                  <p>Yes, it offers a wide range of customizable reports that help with budgeting, auditing, and
-                    compliance requirements.</p>
+                  <p>Yes. The architecture supports all 87 Urban Local Bodies (11 Corporations, 23 Councils, 53
+                    Committees) independently with isolated books of accounts, unique bank ledgers, and distinct
+                    sanction powers, while providing consolidated state-level dashboards for the Directorate.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>How does the system support compliance?</h3>
+                <h3>How is security and financial accountability enforced?</h3>
                 <div class="faq-content">
-                  <p>The software is designed to comply with all applicable government financial regulations like NMAM
-                    and DMAM and provides detailed audit trails for transparency.</p>
+                  <p>The system uses role-based access and Maker-Checker workflows to ensure that financial activities
+                    are reviewed and approved by authorized users. User activities and transaction records are
+                    maintained in the system for monitoring and audit purposes.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
 
               <div class="faq-item">
-                <h3>Can the system integrate with other government departments?</h3>
+                <h3>How can ULB finance staff raise technical or accounting queries?</h3>
                 <div class="faq-content">
-                  <p>Yes, it supports integration with multiple government platforms to enable seamless data exchange
-                    and coordination.</p>
+                  <p>ULB finance teams can email the dedicated state support desk at ulbfinance-support@hry.gov.in or
+                    contact the Centralized ULB Finance Helpdesk at Panchkula during official working hours.</p>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div><!-- End Faq item-->
@@ -702,7 +712,11 @@
             FAQs Sheet
             <i class="bi bi-box-arrow-up-right"></i>
           </a>
-          <a href="https://drive.google.com/drive/folders/1pdrdyk-g0ZFToeORJ7Md2ATXDZ8CqXE6?usp=sharing">
+          <a href="https://drive.google.com/drive/folders/1DN-z1I0DbFYakk6kC1ZQXljPSaOX2JtK">
+            Training Material
+            <i class="bi bi-box-arrow-up-right"></i>
+          </a>
+          <a href="https://drive.google.com/drive/folders/1DN-z1I0DbFYakk6kC1ZQXljPSaOX2JtK">
             Training Video Tutorials
             <i class="bi bi-box-arrow-up-right"></i>
           </a>
