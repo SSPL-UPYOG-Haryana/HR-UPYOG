@@ -62,7 +62,9 @@ class EGFFinance extends Component {
       const response = await fetch(TtlUrl, { credentials: "include" });
       if (!response.ok) {
         console.warn("TTL API responded with status:", response.status);
+        if (response.status === 401 || response.status === 403) {
         this.handleSessionExpired();
+        }
         return;
       }
       const data = await response.json();
