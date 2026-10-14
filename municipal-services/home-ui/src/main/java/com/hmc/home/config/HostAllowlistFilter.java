@@ -1,4 +1,4 @@
-package com.mcd.home.config;
+package com.hmc.home.config;
 
 //import jakarta.servlet.FilterChain;
 //import jakarta.servlet.ServletException;
@@ -12,12 +12,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class HostAllowlistFilter extends OncePerRequestFilter {
 
@@ -45,6 +48,7 @@ public class HostAllowlistFilter extends OncePerRequestFilter {
                 : host;
 
         if (effective == null || effective.trim().isEmpty()) {
+			log.warn("Host validation failed: remoteAddr={}", request.getRemoteAddr());
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid Host header");
             return;
         }
@@ -53,6 +57,7 @@ public class HostAllowlistFilter extends OncePerRequestFilter {
         String normalized = effective.toLowerCase().replaceFirst(":\\d+$", "");
 
         if (!allowedHosts.contains(normalized)) {
+			log.warn("Untrusted Host rejected: host={}, remoteAddr={}", normalized, request.getRemoteAddr());
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Untrusted Host header");
             return;
         }
