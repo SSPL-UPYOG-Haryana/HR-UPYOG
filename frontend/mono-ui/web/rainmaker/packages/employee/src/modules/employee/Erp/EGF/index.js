@@ -139,7 +139,7 @@ class EGFFinance extends Component {
     // erp_url = loc.protocol + "//" + getTenantId().split(".")[1] + subdomainurl + menuUrl;
 
     subdomainurl = domainurl;
-    erp_url = loc.protocol + "//" + menuUrl;
+    erp_url = loc.protocol + "//"+ subdomainurl + menuUrl;
 
     console.log("Finance Iframe URL:", erp_url);
     return (
@@ -254,9 +254,7 @@ class EGFFinance extends Component {
 
     // Construct subdomain dynamically
     const subdomainurl = finEnv ? `${finEnv}.${domainurl}` : `.${domainurl}`;
-    // const erp_url = loc.protocol + "//"+ subdomainurl +  menuUrl;
-    const erp_url = loc.protocol + "//" + menuUrl;
-
+    const erp_url = loc.protocol + "//"+ subdomainurl +  menuUrl;
     this.setState({ isLoading: true, lastUrl: menuUrl }, () => {
       const form = document.getElementById("erp_form");
       if (form) form.action = erp_url;

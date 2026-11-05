@@ -69,9 +69,6 @@ class MenuListComposition extends React.Component {
     this.setState({ popOpen: false });
     const ShareMetaData = this.props;
     const payload = await httpRequest("/egov-ui-transform-service/share/v1/_create", "", [], ShareMetaData);
-    sessionStorage.clear();
-    localStorage.clear();
-    document.cookie.split(";").forEach((cookie) => { const cookieName = cookie.split("=")[0].trim()});
   };
   render() {
     const { classes } = this.props;
