@@ -1,4 +1,4 @@
-package com.mcd.home.config;
+package com.hmc.home.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;

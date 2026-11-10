@@ -19,6 +19,14 @@ import {
 import TranslationNode from "egov-ui-kit/utils/translationNode";
 import "./index.css";
 
+import {
+  MENU_ORDER,
+  MASTERS_ORDER,
+  BILLS_ACCOUNTING_ORDER,
+  PAYMENTS_ORDER,
+} from "./menuOrderConfig";
+
+
 const styles = {
   inputStyle: {
     color: window.innerWidth > 768 ? "#ecf0f1" : "#2c3e50",
@@ -161,17 +169,58 @@ class ActionMenuComp extends Component {
         }
       }
     });
-    // Keep Dashboard first, Inboxes second, everything else as-is
-    submenuItems.sort((a, b) => {
-      // Always keep Dashboard on top
-      if (a.name === "Dashboard") return -1;
-      if (b.name === "Dashboard") return 1;
 
-      // Keep Inboxes second
-      if (a.name === "Inbox") return -1;
-      if (b.name === "Inbox") return 1;
-      return 0;
-    });
+    // Normalize menu names to match configuration keys.
+    const normalizeMenuName = (value = "") => {
+      return String(value)
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "");
+    };
+
+    // Select the appropriate sorting configuration
+    // based on the current parent menu path.
+    let currentMenuOrder = null;
+
+    if (path === "Finance") {
+      currentMenuOrder = MENU_ORDER;
+    } else if (
+      path === "Finance.Masters"
+    ) {
+      currentMenuOrder = MASTERS_ORDER;
+    } else if (
+      path === "Finance.Expenditure Accounting.Bills Accounting"
+    ) {
+      currentMenuOrder = BILLS_ACCOUNTING_ORDER;
+    } else if (
+      path === "Finance.Expenditure Accounting.Payments"
+    ) {
+      currentMenuOrder = PAYMENTS_ORDER;
+    }
+
+    // Apply sorting only to configured menus.
+    if (currentMenuOrder) {
+      submenuItems.sort((a, b) => {
+        const keyA = normalizeMenuName(
+          a.path.split(".").pop()
+        );
+
+        const keyB = normalizeMenuName(
+          b.path.split(".").pop()
+        );
+
+        const priorityA =
+          currentMenuOrder[keyA] !== undefined
+            ? currentMenuOrder[keyA]
+            : Number.MAX_SAFE_INTEGER;
+
+        const priorityB =
+          currentMenuOrder[keyB] !== undefined
+            ? currentMenuOrder[keyB]
+            : Number.MAX_SAFE_INTEGER;
+
+        return priorityA - priorityB;
+      });
+    }
 
     return submenuItems;
   };
@@ -263,8 +312,8 @@ class ActionMenuComp extends Component {
     const itemStyle = { paddingLeft: `${15 + level * 20}px` };
     const label = item.displayName
       ? `ACTION_TEST_${item.displayName
-          .toUpperCase()
-          .replace(/[.:-\s/]/g, "_")}`
+        .toUpperCase()
+        .replace(/[.:-\s/]/g, "_")}`
       : "";
 
     if (item.navigationURL && item.navigationURL !== "newTab") {
@@ -387,8 +436,8 @@ class ActionMenuComp extends Component {
                     label={
                       action.displayName
                         ? `ACTION_TEST_${action.displayName
-                            .toUpperCase()
-                            .replace(/[.:-\s/]/g, "_")}`
+                          .toUpperCase()
+                          .replace(/[.:-\s/]/g, "_")}`
                         : ""
                     }
                     className="whiteColor"
