@@ -135,7 +135,33 @@ public class UserController {
         }
         return searchUsers(request, headers);
     }
+    @PostMapping("/_all")
+    public UserSearchResponse getAll(@RequestBody UserSearchRequest request) {
 
+        // toDomain() extracts tenantId, calculates offset and limit automatically
+        UserSearchCriteria criteria = request.toDomain();
+
+        String tenantId = criteria.getTenantId();
+        Integer offset = criteria.getOffset() != null ? criteria.getOffset() : 0;
+        Integer limit = criteria.getLimit() != null && criteria.getLimit() > 0 ? criteria.getLimit() : 50;
+
+        List<org.egov.user.domain.model.User> userModels = userService.getAllUsers(
+                tenantId, 
+                offset, 
+                limit, 
+                request.getRequestInfo()
+        );
+
+        List<UserSearchResponseContent> userContracts = (userModels != null)
+                ? userModels.stream().map(UserSearchResponseContent::new).collect(Collectors.toList())
+                : Collections.emptyList();
+
+        ResponseInfo responseInfo = ResponseInfo.builder()
+                .status(String.valueOf(HttpStatus.OK.value()))
+                .build();
+
+        return new UserSearchResponse(responseInfo, userContracts);
+    }
     /**
      * end-point to search the users by providing userSearchRequest. In Request
      * if there is no active filed value, it will fetch all(active & inactive)

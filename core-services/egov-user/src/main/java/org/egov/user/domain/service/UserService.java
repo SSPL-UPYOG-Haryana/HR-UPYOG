@@ -236,7 +236,26 @@ public class UserService {
         setFileStoreUrlsByFileStoreIds(list);
         return list;
     }
+    public List<org.egov.user.domain.model.User> getAllUsers(String tenantId, Integer offset, Integer limit, RequestInfo requestInfo) {
+        if (offset == null) offset = 0;
+        if (limit == null || limit == 0) limit = 50;
 
+        // 1. Fetch from repository
+        List<org.egov.user.domain.model.User> users = userRepository.findAllUsersByTenant(tenantId, offset, limit);
+        if (CollectionUtils.isEmpty(users)) {
+            return Collections.emptyList();
+        }
+
+        // 2. Decrypt if encryption is configured
+        if (encryptionDecryptionUtil != null) {
+            users = encryptionDecryptionUtil.decryptObject(users, null, org.egov.user.domain.model.User.class, requestInfo);
+        }
+
+        // 3. Set file store urls
+        setFileStoreUrlsByFileStoreIds(users);
+
+        return users;
+    }
     /**
      * api will create the user based on some validations
      *
