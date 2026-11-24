@@ -231,19 +231,10 @@ export const httpRequest = async (
         apiError;
     }
   }
-  if (isTokenInvalid) {
-    clearUserDetails()
-    window.location.href = `${window.location.origin}/digit-ui/employee/user/login`;
-    return;
-  }
+  // unhandled error
   throw new Error(apiError);
 };
 
-
-export const clearUserDetails = () => {
-  window.localStorage.clear();
-  window.sessionStorage.clear();
-};
 
 export const uploadFile = async (endPoint, module, file, ulbLevel) => {
   // Bad idea to fetch from local storage, change as feasible

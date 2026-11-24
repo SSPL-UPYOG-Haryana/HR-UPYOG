@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { getTenantId, getAccessToken } from "egov-ui-kit/utils/localStorageUtils";
 import { setSessionTTL } from "egov-ui-kit/redux/app/actions";
 import { connect } from "react-redux";
-import { logout } from "egov-ui-kit/redux/auth/actions";
+import { logout, refreshTokenRequest } from "egov-ui-kit/redux/auth/actions";
 class EGFFinance extends Component {
   constructor(props) {
     super(props);
@@ -45,40 +45,52 @@ class EGFFinance extends Component {
   }
 
 
-  async fetchTTL() {
-    try {
-      const tenantIdFull = getTenantId();
+async fetchTTL() {
+  try {
+    const tenantIdFull = getTenantId();
       const tenantParts = tenantIdFull.split('.');
       const cityCode = tenantParts.length > 1 ? tenantParts[1] : undefined;  // e.g. "pg.city"
-      const baseProxy = process.env.REACT_APP_BASE_PROXY;
-      const parsedURL = new URL(baseProxy);
-      const domain = parsedURL.hostname;
-      const protocol = parsedURL.protocol;
+    const baseProxy = process.env.REACT_APP_BASE_PROXY;
+    const parsedURL = new URL(baseProxy);
+    const domain = parsedURL.hostname;
+    const protocol = parsedURL.protocol;
 
       // Construct URL dynamically based on tenant and environment
       // const TtlUrl = `${protocol}//${cityCode}-${domain}/services/EGF/session/ttl`;
       const TtlUrl = `${protocol}//${domain}/services/EGF/session/ttl`;
       // const TtlUrl = "http://localhost:9090/services/EGF/session/ttl"; // for local dev only
-      const response = await fetch(TtlUrl, { credentials: "include" });
+      const response = await fetch(TtlUrl, { credentials: "include", headers: { Accept: "application/json" } });
       if (!response.ok) {
         console.warn("TTL API responded with status:", response.status);
-        this.handleSessionExpired();
+        this.setState({ isLoading: true });
+        try {
+          const thunk = refreshTokenRequest();
+          const newToken = await thunk(this.props.rawDispatch);
+          if (newToken) {
+            this.loadFinanceIframe(newToken);
+          } else {
+            await this.handleSessionExpired();
+          }
+        } catch (error) {
+          console.error("Refresh failed:", error);
+          await this.handleSessionExpired();
+        }
         return;
       }
-      const data = await response.json();
-      if (data && typeof data.ttl === "number") {
-        clearInterval(this.countdownInterval);
-        this.startCountdown(data.ttl);
-        window.dispatchEvent(new CustomEvent("sessionRefreshComplete"));
-      } else {
+    const data = await response.json();
+    if (data && typeof data.ttl === "number") {
+      clearInterval(this.countdownInterval);
+      this.startCountdown(data.ttl);
+      window.dispatchEvent(new CustomEvent("sessionRefreshComplete"));
+    } else {
         console.warn("Unexpected TTL response format:", data);
-      }
-    } catch (error) {
+    }
+  } catch (error) {
       // Don't show raw errors on UI — just log silently for debugging
       console.warn("Failed to fetch TTL:", error.message);
-      this.handleSessionExpired();
-    }
+    this.handleSessionExpired();
   }
+}
   async handleSessionExpired() {
     // Optional: clear any running timers
     clearInterval(this.countdownInterval);
@@ -138,7 +150,7 @@ class EGFFinance extends Component {
     // subdomainurl = !!(finEnv) ? "-" + finEnv + "." + domainurl : "." + domainurl;
     // erp_url = loc.protocol + "//" + getTenantId().split(".")[1] + subdomainurl + menuUrl;
 
-    subdomainurl = domainurl;
+    subdomainurl = finEnv ? `${finEnv}.${domainurl}`: domainurl;
     erp_url = loc.protocol + "//"+ subdomainurl + menuUrl;
 
     console.log("Finance Iframe URL:", erp_url);
@@ -215,16 +227,16 @@ class EGFFinance extends Component {
       </div>
     );
   }
-  componentDidMount() {
-    window.addEventListener("message", this.onMessage, false);
-    window.addEventListener("loacaleChangeEvent", this.resetIframe, false);
-    window.addEventListener("refreshSession", this.handleRefreshSession);
+componentDidMount() {
+  window.addEventListener("message", this.onMessage, false);
+  window.addEventListener("loacaleChangeEvent", this.resetIframe, false);
+  window.addEventListener("refreshSession", this.handleRefreshSession);
     this.iframeRef.current.addEventListener("load", this.onFrameLoad);
 
 
     // First time submit
-    this.loadFinanceIframe();
-  }
+  this.loadFinanceIframe();
+}
   componentDidUpdate(prevProps) {
     let isSecure = window.location.protocol === "https";
     let localeCookie = "locale=" + localStorage.getItem("locale") + ";path=/;domain=." + this.getSubdomain();
@@ -242,26 +254,29 @@ class EGFFinance extends Component {
   }
 
   /** Handle Finance module load */
-  loadFinanceIframe() {
+  loadFinanceIframe(accessToken = getAccessToken()) {
     // debugger;
-    const menuUrl = this.props.location.pathname;
-    const loc = window.location;
-    const hostname = loc.hostname;
-    const domainurl = hostname.substring(hostname.indexOf(".") + 1);
+      const menuUrl = this.props.location.pathname;
+      const loc = window.location;
+      const hostname = loc.hostname;
+      const domainurl = hostname.substring(hostname.indexOf(".") + 1);
 
     // Read environment name from global configs or .env file
     const finEnv = this.globalConfigExists() ? window.globalConfigs.getConfig("FIN_ENV") : process.env.REACT_APP_FIN_ENV;
 
     // Construct subdomain dynamically
-    const subdomainurl = finEnv ? `${finEnv}.${domainurl}` : `.${domainurl}`;
+    const subdomainurl = finEnv ? `${finEnv}.${domainurl}`: domainurl;
     const erp_url = loc.protocol + "//"+ subdomainurl +  menuUrl;
     this.setState({ isLoading: true, lastUrl: menuUrl }, () => {
       const form = document.getElementById("erp_form");
-      if (form) form.action = erp_url;
-      this.submitIframeForm();
+    if (form) {
+      form.action = erp_url;
+      form.elements.auth_token.value = accessToken;
+    }      
+    this.submitIframeForm();
     });
     // console.log("Loading Finance Iframe URL:", erp_url);
-  }
+    }
   onMessage = (event) => {
     if (event.data != "close") return;
     // document.getElementById('erp_iframe').style.display='none';
@@ -298,4 +313,9 @@ class EGFFinance extends Component {
 
 }
 
-export default connect(null, { setSessionTTL, logout })(EGFFinance);
+export default connect(null, (dispatch) => ({
+  setSessionTTL: (ttl) => dispatch(setSessionTTL(ttl)),
+  logout: () => dispatch(logout()),
+  refreshTokenRequest,
+  rawDispatch: dispatch,
+}))(EGFFinance);
