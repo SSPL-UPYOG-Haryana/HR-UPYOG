@@ -1,5 +1,5 @@
 
-FROM node:14.21.3-alpine AS build
+FROM node:14.21.3-bullseye AS build
 ARG WORK_DIR
 WORKDIR /app
 ENV NODE_OPTIONS "--max-old-space-size=1792"
