@@ -120,7 +120,8 @@ class ActionMenuComp extends Component {
 
   isPathActive = (path) => {
     const { activeRoutePath, actionListArr } = this.props;
-    if (activeRoutePath === path || activeRoutePath.startsWith(`${path}.`)) {
+    if (typeof activeRoutePath === "string" &&
+        (activeRoutePath === path || activeRoutePath.startsWith(`${path}.`))) {
       return true;
     }
 
